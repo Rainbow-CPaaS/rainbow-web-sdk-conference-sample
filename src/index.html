@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment-with-locales.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js"></script>
+        <script src="./scripts/vendors-sdk.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Rainbow Web SDK - ES6 STARTER KIT</title>
+    </head>
+    <body>
+        <h1>Rainbow Web SDK - Conference Sample</h1>
+        <div id="loginForm">
+            <form>
+                <input placeholder="Your login" name="login" id="login" />
+                <br />
+                <input placeholder="Password" type="password" name="password" id="password" />
+                <br />
+            </form>
+            <button id="signIn" type="submit">Login</button>
+        </div>
+
+        <div id="apiList">
+            <button id="getBubble">getBubble</button>
+            <div id="conferenceMethods">
+                <button id="startOrJoinWebConference">startOrJoinWebConference</button>
+                <button id="stopWebConference">stopWebConference</button>
+                <button id="addVideoToConference">addVideoToConference</button>
+                <button id="addSharingToConference">addSharingToConference</button>
+                <button id="removeSharingFromConference">removeSharingFromConference</button>
+                <button id="removeVideoFromConference">removeVideoFromConference</button>
+                <button id="showLocalVideo">showLocalVideo</button>
+                <button id="showRemoteVideo">showRemoteVideo</button>
+            </div>
+
+            <div class="videoWrapper">
+                <!-- global tag, needed for bootstrapping the video streams -->
+                <video id="globalVideoTag" autoplay style="display:none;"></video>
+
+                <!-- main distant video stream -->
+                <div class="box">
+                    <label for="largevideo">#largevideo</label>
+                    <video id="largevideo" autoplay></video>
+                </div>
+
+                <!-- local video stream -->
+                <div class="box">
+                    <label for="conferenceVideoPip">#conferenceVideoPip</label>
+                    <video id="conferenceVideoPip" autoplay muted>Conference video PiP</video>
+                </div>
+
+                <!-- local sharing stream -->
+                <div class="box">
+                    <label for="conferenceSharingPip">#conferenceSharingPip</label>
+                    <video id="conferenceSharingPip" autoplay muted></video>
+                </div>
+
+                <!-- gallery tags, presenting up to 4 distant streams at the time -->
+                <div class="box">
+                    <label for="videoGallery_1">#videoGallery_1</label>
+                    <video id="videoGallery_1" autoplay></video>
+                </div>
+                <div class="box">
+                    <label for="videoGallery_2">#videoGallery_2</label>
+                    <video id="videoGallery_2" autoplay></video>
+                </div>
+                <div class="box">
+                    <label for="videoGallery_3">#videoGallery_3</label>
+                    <video id="videoGallery_3" autoplay></video>
+                </div>
+                <div class="box">
+                    <label for="videoGallery_4">#videoGallery_4</label>
+                    <video id="videoGallery_4" autoplay></video>
+                </div>
+            </div>
+        </div>
+
+        <audio id="globalAudioTag" autoPlay display="none"></audio>
+    </body>
+</html>

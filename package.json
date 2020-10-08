@@ -1,0 +1,42 @@
+{
+    "name": "rainbow-web-sdk-conference-sample",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "webpack --config ./webpack.config.prod.js  --colors",
+        "serve": "webpack-dev-server --open --hot --watch --config ./webpack.config.dev.js",
+        "copy": "cp ./node_modules/rainbow-web-sdk/src/vendors-sdk.min.js ./src/scripts/"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.7.4",
+        "@babel/plugin-proposal-class-properties": "^7.7.4",
+        "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+        "@babel/preset-env": "^7.7.4",
+        "babel-loader": "^8.0.6",
+        "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^5.0.5",
+        "core-js": "^3.4.5",
+        "css-loader": "^3.2.0",
+        "eslint": "^6.7.1",
+        "eslint-loader": "^3.0.2",
+        "file-loader": "^5.0.2",
+        "html-webpack-plugin": "^3.2.0",
+        "mini-css-extract-plugin": "^0.8.0",
+        "prettier": "^1.19.1",
+        "style-loader": "^1.0.0",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.9.0",
+        "webpack-merge": "^4.2.2"
+    },
+    "dependencies": {
+        "lodash": "^4.17.15",
+        "rainbow-web-sdk": "^1.78.0-beta.0",
+        "sass": "^1.27.0",
+        "sass-loader": "^10.0.2"
+    }
+}
