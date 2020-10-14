@@ -17,16 +17,22 @@ let conferenceSession;
 /* LOAD THE SDK */
 let onLoaded = function onLoaded() {
     console.log('On SDK Loaded !');
+    if (config.login && config.password) {
+        document.getElementById('loginForm').innerHTML = `<h4>User credentials found in config: connecting... ${config.login}</h4>`;
+        signIn();
+    }
 };
 
 /* SIGN IN METHOD */
 function signIn() {
-    console.log(document.getElementById('login').value);
+    let login = config.login ? config.login : document.getElementById('login').value;
+    let password = config.password ? config.password : document.getElementById('password').value;
+
     rainbowSDK
         .initialize(config.appId, config.appSecret)
         .then(() => {
             console.log('[DEMO] :: Rainbow SDK is initialized!');
-            rainbowSDK.connection.signin(document.getElementById('login').value, document.getElementById('password').value).then(account => {
+            rainbowSDK.connection.signin(login, password).then(account => {
                 console.log('User Connected >', account.userData.displayName);
                 document.getElementById('loginForm').innerHTML =
                     '<div id="connectedUser"><h4>Connected as: ' + account.userData.displayName + '</h4></div>';
@@ -105,6 +111,18 @@ function showRemoteVideo() {
     rainbowSDK.conferences.showRemoteVideo(conferenceSession);
 }
 
+function updateMainVideoSession() {
+    console.log('Update main video session');
+    /* Chose one of the sessionIds */
+    let conferenceId = conferenceSession.id;
+    let sessionId_1 = conferenceSession.videoGallery[0];
+    let sessionId_2 = conferenceSession.videoGallery[1];
+    let sessionId_3 = conferenceSession.videoGallery[2];
+    let sessionId_4 = conferenceSession.videoGallery[3];
+
+    rainbowSDK.conferences.updateMainVideoSession(conferenceId, sessionId_2);
+}
+
 /* BUTTON HANDLERS */
 let btnGetBubble = document.getElementById('getBubble');
 let btnStartOrJoinWebConference = document.getElementById('startOrJoinWebConference');
@@ -115,6 +133,7 @@ let btnRemoveSharingFromConference = document.getElementById('removeSharingFromC
 let btnRemoveVideoFromConference = document.getElementById('removeVideoFromConference');
 let btnShowLocalVideo = document.getElementById('showLocalVideo');
 let btnShowRemoteVideo = document.getElementById('showRemoteVideo');
+let btnUpdateMainVideoSession = document.getElementById('updateMainVideoSession');
 let btnSignIn = document.getElementById('signIn');
 
 window.onload = () => {
@@ -127,6 +146,7 @@ window.onload = () => {
     bntStopWebConference.onclick = stopWebConference;
     btnShowLocalVideo.onclick = showLocalVideo;
     btnShowRemoteVideo.onclick = showRemoteVideo;
+    btnUpdateMainVideoSession.onclick = updateMainVideoSession;
     btnSignIn.onclick = signIn;
 };
 
@@ -137,12 +157,18 @@ let onWebConferenceUpdated = function(event) {
     conferenceSession = conference;
 };
 
+let onBubbleConferenceStarted = function(event) {
+    let bubble = event.detail;
+    console.log('Web Conference started', bubble);
+};
+
 let onReady = function onReady() {
     console.log('On SDK Ready !');
 };
 
 document.addEventListener(rainbowSDK.RAINBOW_ONREADY, onReady);
 document.addEventListener(rainbowSDK.RAINBOW_ONLOADED, onLoaded);
-document.addEventListener(rainbowSDK.bubbles.RAINBOW_ONWEBCONFERENCEUPDATED, onWebConferenceUpdated);
+document.addEventListener(rainbowSDK.conferences.RAINBOW_ONWEBCONFERENCEUPDATED, onWebConferenceUpdated);
+document.addEventListener(rainbowSDK.conferences.RAINBOW_ONBUBBLECONFERENCESTARTED, onBubbleConferenceStarted);
 
 rainbowSDK.load(sdkConfig);
