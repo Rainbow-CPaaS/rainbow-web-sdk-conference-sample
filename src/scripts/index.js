@@ -10,14 +10,16 @@ const sdkConfig = {
     verboseLog: true,
 };
 
-const customBubbleData = {
-    showAllVideos: true,
-    blockUserVideo: false,
+/* CUSTOM DATA OBJECT FOR A BUBBLE */
+const customData = {
+    usersWithDisabledVideo: [],
 };
 
 /* GLOBAL VARIABLES */
 let bubble;
 let conferenceSession;
+let connectedUser;
+let canUseVideoStreamInConference = true;
 
 /* LOAD THE SDK */
 let onLoaded = function onLoaded() {
@@ -38,9 +40,10 @@ function signIn() {
         .then(() => {
             console.log('[DEMO] :: Rainbow SDK is initialized!');
             rainbowSDK.connection.signin(login, password).then(account => {
+                connectedUser = account;
                 console.log('User Connected >', account.userData.displayName);
                 document.getElementById('loginForm').innerHTML =
-                    '<div id="connectedUser"><h4>Connected as: ' + account.userData.displayName + '</h4></div>';
+                    '<div id="connectedUser"><h4>Connected as: ' + account.userData.displayName + '</h4><div id="bubbleDetails"></div></div>';
                 document.getElementById('apiList').style.display = 'table';
             });
         })
@@ -57,9 +60,14 @@ function getBubble() {
     const allBubbles = rainbowSDK.bubbles.getAllBubbles();
     for (let i = 0; i < allBubbles.length; i++) {
         if (allBubbles[i].name === config.bubbleName) {
-            console.log('Found the bubble');
             bubble = allBubbles[i];
-            updateCustomDataForBubble();
+            console.log('Found the bubble', bubble);
+            showBubbleDetails();
+
+            /* Only bubble owner can update customData - do it at each connection to reset it's state */
+            if (bubble.owner) {
+                updateCustomDataForBubble();
+            }
             document.getElementById('conferenceMethods').style.display = 'table';
         }
     }
@@ -68,15 +76,89 @@ function getBubble() {
     }
 }
 
+function showBubbleDetails() {
+    let bubbleDetails = document.getElementById('bubbleDetails');
+    let bubbleName = `<div id="bubbleName"><h4>Bubble: ${bubble.name}</h4></div>`;
+    let bubbleOwner = `<div id="owner"><strong>Owner: ${bubble.ownerContact.loginEmail} ${bubble.owner ? ' (you)' : ''}</strong></div>`;
+    let bubbleMembers = '';
+    bubble.members.forEach(member => {
+        bubbleMembers += `<div class="bubbleMember">${member.contact.loginEmail} <button id=${member.contact.id} ${
+            bubble.owner ? '' : 'disabled'
+        }>Video: true</button> 
+        </div>`;
+    });
+
+    bubbleDetails.innerHTML = bubbleName + bubbleOwner + bubbleMembers;
+
+    /* ADD EVENT LISTENERS FOR INTERACTIVE CUSTOM DATA CHANGES */
+    bubble.members.forEach(member => {
+        document.getElementById(member.contact.id).addEventListener('click', toggleVideoAvailabilityForDistantUser);
+    });
+}
+
+/* UPDATE CUSTOM DATA FROM CONFIG OBJECT */
 function updateCustomDataForBubble() {
     rainbowSDK.bubbles
-        .updateCustomDataForBubble(customBubbleData, bubble)
+        .updateCustomDataForBubble(customData, bubble)
         .then(bubble => {
             console.log('Custom data for bubble updated', bubble.customData);
         })
         .catch(err => {
             console.log(err);
         });
+}
+
+/* UPDATE CUSTOM DATA FROM CLICK EVENT */
+function toggleVideoAvailabilityForDistantUser(event) {
+    console.log('Update custom data - disable video for user: ', event.srcElement.id);
+    let newCustomData = customData;
+
+    if (event.srcElement.innerHTML === 'Video: true') {
+        newCustomData.usersWithDisabledVideo.push(event.srcElement.id);
+    } else {
+        let filteredArray = newCustomData.usersWithDisabledVideo.filter(value => {
+            return value !== event.srcElement.id;
+        });
+        newCustomData.usersWithDisabledVideo = filteredArray;
+    }
+
+    rainbowSDK.bubbles
+        .updateCustomDataForBubble(newCustomData, bubble)
+        .then(bubble => {
+            console.log('Custom data for bubble updated', bubble.customData);
+            event.srcElement.innerHTML === 'Video: true'
+                ? (event.srcElement.innerHTML = 'Video: false')
+                : (event.srcElement.innerHTML = 'Video: true');
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+function checkIfVideoDisabledForConnectedUser(eventBubble) {
+    if (bubble.name === eventBubble.name) {
+        let connectedUserFound = false;
+
+        bubble.customData.usersWithDisabledVideo.forEach(user => {
+            bubble.members.forEach(member => {
+                if (user === member.contact.id) {
+                    document.getElementById(user).innerHTML = 'Video: false';
+                    if (user === connectedUser.userData.jid_im) {
+                        console.log('You have now no right to add video to conference');
+                        connectedUserFound = true;
+                    }
+                }
+            });
+        });
+
+        if (connectedUserFound) {
+            canUseVideoStreamInConference = false;
+            btnAddVideoToConference.disabled = true;
+        } else {
+            canUseVideoStreamInConference = true;
+            btnAddVideoToConference.disabled = null;
+        }
+    }
 }
 
 function startOrJoinWebConference() {
@@ -179,6 +261,15 @@ let onBubbleConferenceStarted = function(event) {
     console.log('Web Conference started', bubble);
 };
 
+let onBubbleUpdated = function(event) {
+    let eventBubble = event.detail;
+    console.log('On bubble updated', eventBubble);
+    /* Update state of videos from distance - only for not owners */
+    if (bubble && !bubble.owner) {
+        checkIfVideoDisabledForConnectedUser(eventBubble);
+    }
+};
+
 let onReady = function onReady() {
     console.log('On SDK Ready !');
 };
@@ -187,5 +278,6 @@ document.addEventListener(rainbowSDK.RAINBOW_ONREADY, onReady);
 document.addEventListener(rainbowSDK.RAINBOW_ONLOADED, onLoaded);
 document.addEventListener(rainbowSDK.conferences.RAINBOW_ONWEBCONFERENCEUPDATED, onWebConferenceUpdated);
 document.addEventListener(rainbowSDK.conferences.RAINBOW_ONBUBBLECONFERENCESTARTED, onBubbleConferenceStarted);
+document.addEventListener(rainbowSDK.bubbles.RAINBOW_ONBUBBLEUPDATED, onBubbleUpdated);
 
 rainbowSDK.load(sdkConfig);

@@ -60,3 +60,9 @@ video {
 #conferenceMethods {
     display: none;
 }
+
+.bubbleMember {
+    border: 1px solid black;
+    margin-top: 5px;
+    padding: 3px;
+}
