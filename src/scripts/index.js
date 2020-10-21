@@ -10,6 +10,11 @@ const sdkConfig = {
     verboseLog: true,
 };
 
+const customBubbleData = {
+    showAllVideos: true,
+    blockUserVideo: false,
+};
+
 /* GLOBAL VARIABLES */
 let bubble;
 let conferenceSession;
@@ -64,14 +69,10 @@ function getBubble() {
 }
 
 function updateCustomDataForBubble() {
-    const customData = {
-        showAllVideos: true,
-        blockUserVideo: false,
-    };
     rainbowSDK.bubbles
-        .updateCustomDataForBubble(customData, bubble)
+        .updateCustomDataForBubble(customBubbleData, bubble)
         .then(bubble => {
-            console.log('Custom data for bubble updated', bubble);
+            console.log('Custom data for bubble updated', bubble.customData);
         })
         .catch(err => {
             console.log(err);
