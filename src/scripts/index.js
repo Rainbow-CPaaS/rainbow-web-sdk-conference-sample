@@ -54,12 +54,28 @@ function getBubble() {
         if (allBubbles[i].name === config.bubbleName) {
             console.log('Found the bubble');
             bubble = allBubbles[i];
+            updateCustomDataForBubble();
             document.getElementById('conferenceMethods').style.display = 'table';
         }
     }
     if (!bubble) {
         console.warn(`No bubble with following name found: ${config.bubbleName}`);
     }
+}
+
+function updateCustomDataForBubble() {
+    const customData = {
+        showAllVideos: true,
+        blockUserVideo: false,
+    };
+    rainbowSDK.bubbles
+        .updateCustomDataForBubble(customData, bubble)
+        .then(bubble => {
+            console.log('Custom data for bubble updated', bubble);
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }
 
 function startOrJoinWebConference() {
