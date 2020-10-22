@@ -222,6 +222,38 @@ function updateMainVideoSession() {
     rainbowSDK.conferences.updateMainVideoSession(conferenceId, sessionId_2);
 }
 
+function muteConferenceParticipant() {
+    console.log('Mute conference participant');
+
+    /* Mute the first participant on the list - change the number to another one */
+    let participantId = conferenceSession.participants[1].participantId;
+
+    rainbowSDK.conferences
+        .muteConferenceParticipant(conferenceSession, participantId)
+        .then(() => {
+            console.log(`Participant ${participantId} muted `);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+function unmuteConferenceParticipant() {
+    console.log('Mute conference participant');
+
+    /* Mute the first participant on the list - change the number to another one */
+    let participantId = conferenceSession.participants[1].participantId;
+
+    rainbowSDK.conferences
+        .unmuteConferenceParticipant(conferenceSession, participantId)
+        .then(() => {
+            console.log(`Participant ${participantId} unmuted `);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
 /* BUTTON HANDLERS */
 let btnGetBubble = document.getElementById('getBubble');
 let btnStartOrJoinWebConference = document.getElementById('startOrJoinWebConference');
@@ -233,6 +265,8 @@ let btnRemoveVideoFromConference = document.getElementById('removeVideoFromConfe
 let btnShowLocalVideo = document.getElementById('showLocalVideo');
 let btnShowRemoteVideo = document.getElementById('showRemoteVideo');
 let btnUpdateMainVideoSession = document.getElementById('updateMainVideoSession');
+let btnMuteConferenceParticipant = document.getElementById('muteConferenceParticipant');
+let btnUnmuteConferenceParticipant = document.getElementById('unmuteConferenceParticipant');
 let btnSignIn = document.getElementById('signIn');
 
 window.onload = () => {
@@ -246,6 +280,8 @@ window.onload = () => {
     btnShowLocalVideo.onclick = showLocalVideo;
     btnShowRemoteVideo.onclick = showRemoteVideo;
     btnUpdateMainVideoSession.onclick = updateMainVideoSession;
+    btnMuteConferenceParticipant.onclick = muteConferenceParticipant;
+    btnUnmuteConferenceParticipant.onclick = unmuteConferenceParticipant;
     btnSignIn.onclick = signIn;
 };
 
