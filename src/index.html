@@ -22,6 +22,7 @@
         </div>
 
         <div id="apiList">
+            <button id="createBubble">createBubble</button>
             <button id="getBubble">getBubble</button>
             <div id="conferenceMethods">
                 <button id="startOrJoinWebConference">startOrJoinWebConference</button>
@@ -32,9 +33,10 @@
                 <button id="removeVideoFromConference">removeVideoFromConference</button>
                 <button id="showLocalVideo">showLocalVideo</button>
                 <button id="showRemoteVideo">showRemoteVideo</button>
-                <button id="updateMainVideoSession">updateMainVideoSession</button>
-                <button id="muteConferenceParticipant">muteConferenceParticipant</button>
-                <button id="unmuteConferenceParticipant">unmuteConferenceParticipant</button>
+                <button id="setActiveSpeaker">setActiveSpeaker</button>
+                <button id="removeActiveSpeaker">removeActiveSpeaker</button>
+                <button id="delegateConferenceToParticipant">delegateConferenceToParticipant</button>
+                <button id="getListOfRemoteVideoPublishers">getListOfRemoteVideoPublishers</button>
             </div>
 
             <div class="videoWrapper">
@@ -62,19 +64,19 @@
                 <!-- gallery tags, presenting up to 4 distant streams at the time -->
                 <div class="box">
                     <label for="videoGallery_1">#videoGallery_1</label>
-                    <video id="videoGallery_1" autoplay></video>
+                    <video id="videoGallery_1" name="1" autoplay></video>
                 </div>
                 <div class="box">
                     <label for="videoGallery_2">#videoGallery_2</label>
-                    <video id="videoGallery_2" autoplay></video>
+                    <video id="videoGallery_2" name="2" autoplay></video>
                 </div>
                 <div class="box">
                     <label for="videoGallery_3">#videoGallery_3</label>
-                    <video id="videoGallery_3" autoplay></video>
+                    <video id="videoGallery_3" name="3" autoplay></video>
                 </div>
                 <div class="box">
                     <label for="videoGallery_4">#videoGallery_4</label>
-                    <video id="videoGallery_4" autoplay></video>
+                    <video id="videoGallery_4" name="0" autoplay></video>
                 </div>
             </div>
         </div>

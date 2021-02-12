@@ -1,7 +1,7 @@
 const config = {
-    appId: 'YOUR APP ID',
-    appSecret: 'YOUR APP SECRET',
-    bubbleName: 'Conference test',
+    appId: '',
+    appSecret: '',
+    bubbleName: 'Stat - Morning Session',
 };
 
 export { config };
